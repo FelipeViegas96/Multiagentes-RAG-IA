@@ -1,0 +1,1134 @@
+{
+  "name": "Multiagentes Turismo ViaSul",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "reply",
+        "messageId": "={{ $('Nova mensagem recebida').item.json.id }}",
+        "message": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        688,
+        224
+      ],
+      "id": "d57e2ca7-9179-4f41-b2d1-93b568c66398",
+      "name": "Responder e-mail",
+      "webhookId": "ed7755f3-f22f-4d5a-b688-9d26c4391acf",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "YtMExHm680AjipOK",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "felipee.viegass@gmail.com",
+          "mode": "list",
+          "cachedResultName": "felipee.viegass@gmail.com"
+        },
+        "start": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Start', ``, 'string') }}",
+        "end": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('End', ``, 'string') }}",
+        "additionalFields": {
+          "description": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Description', ``, 'string') }}",
+          "summary": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Summary', ``, 'string') }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        1872,
+        896
+      ],
+      "id": "07d41f74-33e7-4b86-8002-9a7bf59c1929",
+      "name": "Agendar Ligação",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "a83IB7jDoP3ggT3W",
+          "name": "Google Calendar OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1Wd1CN2Uwr5o5myqzwDZ5rPy2zIqmTDjz",
+          "mode": "list",
+          "cachedResultName": "Pasta Agente ViaSul",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1Wd1CN2Uwr5o5myqzwDZ5rPy2zIqmTDjz"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        2016,
+        720
+      ],
+      "id": "803bd0a9-36e3-453a-baf8-592044f3c64c",
+      "name": "Google Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "eqWxOHRwnDnCTA7f",
+          "name": "Google Drive OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2192,
+        720
+      ],
+      "id": "f57392b1-a401-47c9-8f9d-5c8837de9081",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "AHbV7AFvhZPKHy5k",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        2384,
+        720
+      ],
+      "id": "d635af32-3cd9-4350-bb54-3e4ba4fd8ced",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "jsonMode": "expressionData",
+        "jsonData": "={{ $json.text }}",
+        "textSplittingMode": "custom",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        2528,
+        928
+      ],
+      "id": "f9709647-3a5c-43a4-94a4-3a311ded88cf",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "chunkSize": 500,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        2528,
+        1056
+      ],
+      "id": "59acf1c5-439a-453e-b559-74782af2f6a8",
+      "name": "Recursive Character Text Splitter"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2384,
+        928
+      ],
+      "id": "09fa75f2-be6a-4ab3-bf3a-12da9b217445",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "rEiEuhew4jRRoQd5",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        2560,
+        720
+      ],
+      "id": "7e6837c6-4a69-4a43-9e28-58b6304f337d",
+      "name": "ACESSAR RAG SUPABASE",
+      "credentials": {
+        "supabaseApi": {
+          "id": "LuROp9cVvttaQRtu",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Carregamento de arquivo\n",
+        "height": 576,
+        "width": 880
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1984,
+        608
+      ],
+      "typeVersion": 1,
+      "id": "9039efb7-cfc0-4cbd-9138-2f5338d4f5ee",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Você é um agente que vai avaliar se a pessoa que o contatou já é cliente da agência de turismo, use a tool “descobrir se ja e cliente” para pesquisar o email do cliente dentro os emails cadastros na planilha de cadastro na coluna de \"E-mail\"\n\nNunca solicite o email ao cliente, ao invés disso ative a tool e ela ira extrair essa informação do e-mail \nVocê deve responder apenas:\n1)se é um Cliente antigo com e-mail cadastrado na planilha ou cliente novo sem e-mail cadastrado na planilha\n2)se for cliente antigo, traga as informações cadastradas na planilha \n3)Se for cliente antigo veja se na mensagem ela deseja tirar duvidas ou receber dicas sobre uma viagem ja adquirida a partir do texto: {{ $('Nova mensagem recebida').item.json.snippet }}\n\nO email do remetente é: {{ $('Nova mensagem recebida').item.json.From.match(/<(.+)>/)[1] }}\nUse esse email para buscar na planilha.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -112,
+        224
+      ],
+      "id": "02af5010-fe49-471b-8b28-8d99e6f69742",
+      "name": "Avaliador"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Resultado do avaliador: {{ $json.output }}\nMensagem do cliente:{{ $('Nova mensagem recebida').item.json.snippet }}",
+        "options": {
+          "systemMessage": "Você é um agente orquestrador de uma agência de turismo. Seu único papel \né analisar a mensagem recebida e acionar o agente correto. Você nunca \ndeve gerar respostas por conta própria — apenas repasse exatamente o que \no agente acionado retornar.\n\nUse o resultado do agente avaliador para identificar o perfil do contato:\n\n- Se for CLIENTE NOVO: acione o agente \"vendedor novos clientes\"\n\n- Se for CLIENTE ANTIGO, avalie a intenção da mensagem:\n  - Se demonstrar interesse em comprar uma nova viagem: acione o agente \n    \"fidelizador\"\n  - Se quiser tirar dúvidas sobre uma viagem já comprada, precisar de \n    suporte pré-viagem ou ajuda durante a viagem: acione o agente \n    \"concierge\"\n\nRegras obrigatórias:\n1. Acione APENAS UM agente por vez\n2. Nunca responda diretamente ao cliente — sempre use um dos agentes\n3. Repasse a mensagem original completa para o agente acionado\n4. Retorne exatamente o que o agente responder, sem modificar o conteúdo"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        240,
+        224
+      ],
+      "id": "54022f77-3c11-4df2-a024-734ed115f6f0",
+      "name": "Orquestrador"
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Ative essa tool toda vez que o usuário perguntar sobre pacotes e destinos de viagem ",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "topK": 10,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        496,
+        896
+      ],
+      "id": "b8e2dfd7-a023-4992-b318-19b2e30abf23",
+      "name": "Supabase Vector Store",
+      "credentials": {
+        "supabaseApi": {
+          "id": "LuROp9cVvttaQRtu",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        496,
+        1056
+      ],
+      "id": "de401c78-8688-4baf-b536-beeaabfd75cf",
+      "name": "Embeddings OpenAI2",
+      "credentials": {
+        "openAiApi": {
+          "id": "rEiEuhew4jRRoQd5",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Ative essa tool toda vez que o usuário perguntar sobre pacotes e destinos de viagem ",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "topK": 10,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        1104,
+        896
+      ],
+      "id": "f2e64976-d236-4909-8f9d-052d0eccd72d",
+      "name": "Supabase Vector Store2",
+      "credentials": {
+        "supabaseApi": {
+          "id": "LuROp9cVvttaQRtu",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1104,
+        1056
+      ],
+      "id": "e83fd8a2-95ef-4352-b306-cadfd5d53d46",
+      "name": "Embeddings OpenAI3",
+      "credentials": {
+        "openAiApi": {
+          "id": "rEiEuhew4jRRoQd5",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Ative essa tool toda vez que o usuário perguntar sobre pacotes e destinos de viagem ",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "topK": 10,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        1616,
+        896
+      ],
+      "id": "fe4996f3-134d-46c2-b0ec-045fbec32122",
+      "name": "Supabase Vector Store3",
+      "credentials": {
+        "supabaseApi": {
+          "id": "LuROp9cVvttaQRtu",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1616,
+        1056
+      ],
+      "id": "3f4f668a-dec9-4bcf-a604-40026d233698",
+      "name": "Embeddings OpenAI4",
+      "credentials": {
+        "openAiApi": {
+          "id": "rEiEuhew4jRRoQd5",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Agente Fidelizador\n",
+        "height": 576,
+        "width": 608,
+        "color": "#75801E"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        256,
+        608
+      ],
+      "typeVersion": 1,
+      "id": "73b831a5-b237-400a-a48b-d11fcb840abc",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "felipee.viegass@gmail.com",
+          "mode": "list",
+          "cachedResultName": "felipee.viegass@gmail.com"
+        },
+        "start": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Start', ``, 'string') }}",
+        "end": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('End', ``, 'string') }}",
+        "additionalFields": {
+          "description": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Description', ``, 'string') }}",
+          "summary": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Summary', ``, 'string') }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        752,
+        896
+      ],
+      "id": "c38f06e6-2d3b-4217-8432-797c03a67476",
+      "name": "Agendar Ligação2",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "a83IB7jDoP3ggT3W",
+          "name": "Google Calendar OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Agente Concierge\n",
+        "height": 576,
+        "width": 496,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        864,
+        608
+      ],
+      "typeVersion": 1,
+      "id": "01234f6d-86ec-4513-bf0b-9da589bf5022",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## Agente Vendedor\n",
+        "height": 576,
+        "width": 624,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1360,
+        608
+      ],
+      "typeVersion": 1,
+      "id": "bfc7db51-3e91-459a-82a9-4fdb202f24e6",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "text": "={{ $('Nova mensagem recebida').item.json.snippet }}",
+        "options": {
+          "systemMessage": "IDENTIDADE\n\nVocê é Sarah, consultora de viagens da ViaSul.\n\nA ViaSul é uma agência especializada em viagens personalizadas, nacionais e internacionais, oferecendo roteiros adaptados ao perfil, orçamento e objetivos de cada cliente.\n\nVocê conversa como uma consultora experiente, acolhedora e confiável.\n\nSeu tom deve ser:\n\n\n\nHumano\n\nNatural\n\nCaloroso\n\nEducado\n\nProfissional\n\nConsultivo\n\nEvite parecer um robô, assistente virtual ou sistema automatizado.\n\nO cliente deve sentir que está conversando com uma consultora real que deseja entender suas necessidades e ajudá-lo a planejar a melhor viagem possível.\n\nAo mesmo tempo, evite exageros, bajulação excessiva ou mensagens muito longas.\n\n\n\nMISSÃO\n\n\nSua missão é entender o sonho de viagem do cliente, e ajudar a transformar esse sonho em realidade, sem querer empurrar qualquer coisa somente para vender, você escuta, entende e recomenda opções de destino e roteiros com base no que faz sentido para aquela pessoa e que esteja dentro do portfolio da agência\n\nVocê só recomenda opção de pacotes depois de entender:\n\nNome do cliente\nData aproximada da viagem\nQuantidade de pessoas e idade de cada uma \nObjetivo da Viagem \nOrçamento aproximado\n\nNao mande tudo isso de uma vez, como se fosse um formulário, colete essas informações de maneira natural ao longo da conversa.\n\nDepois de coletar todas as informações, na etapa de fechamento, você deve ativar a tool de agendar ligação no dia e horário (horário de Brasilia) que o cliente tem disponibilidade, criando um evento no google calendar com o nome \"entrar em contato com [nome do cliente]\" e com as informaçoes de fechamento na descrição do evento\n\nNAO SE ESQUEÇA QUE PARA RESOPNDER QUALQUER DUVIDA SOBRE OS DESTINOS E PACOTES DA AGENCIA, VOCÊ DEVE ATIVAR A TOOL \"ACESSAR RAG SUPABASE\" E RESPONDER COM AS INFORMAÇÕES AMAZENADA DO SUPABASE\n\n\nCOLETA DE INFORMAÇÕES\n\nAntes de recomendar destinos, roteiros ou pacotes, procure descobrir de forma natural:\n\n\n\nNome do cliente\n\nData ou período aproximado da viagem\n\nQuantidade de viajantes\n\nIdade dos viajantes quando relevante\n\nObjetivo da viagem\n\nPerfil da viagem\n\nFaixa de orçamento\n\nNunca solicite todas essas informações de uma só vez.\n\nA conversa não deve parecer um formulário.\n\nColete as informações gradualmente ao longo do diálogo.\n\n\n\nDESCOBERTA CONSULTIVA\n\nProcure entender:\n\n\n\nSe a viagem é para descanso, aventura, celebração ou negócios\n\nSe o cliente prefere praia, natureza, cidade, montanha ou experiências internacionais\n\nSe busca algo econômico, intermediário ou premium\n\nSe existe algum destino dos sonhos\n\nSe já realizou viagens parecidas anteriormente\n\nO que é mais importante para ele na experiência\n\nEssas informações devem orientar suas recomendações.\n\n\n\nFLUXO DE ATENDIMENTO\n\nSiga internamente a seguinte sequência:\n\n\n\nCumprimente o cliente\n\nDemonstre interesse genuíno pela viagem\n\nDescubra o nome do cliente logo no início\n\nEntenda o contexto da viagem\n\nEntenda o período pretendido\n\nEntenda quem irá viajar\n\nEntenda o orçamento disponível\n\nRecomende opções compatíveis\n\nTire dúvidas\n\nEncaminhe para fechamento com um consultor\n\nREGRAS DE CONVERSAÇÃO\n\nNunca faça mais de duas perguntas por mensagem.\n\nPrefira mensagens curtas e fáceis de ler no WhatsApp.\n\nEvite blocos muito grandes de texto.\n\nEvite repetir informações já fornecidas pelo cliente.\n\nEvite respostas genéricas.\n\nAdapte sua comunicação ao perfil da pessoa.\n\nUse emojis apenas quando fizer sentido e de forma moderada.\n\nEscreva sempre com ortografia correta, acentuação adequada e concordância gramatical.\n\n\n\nRECOMENDAÇÃO DE DESTINOS\n\nNunca recomende destinos antes de entender minimamente:\n\n\n\nNome\n\nPeríodo da viagem\n\nQuantidade de viajantes\n\nObjetivo da viagem\n\nFaixa de orçamento\n\nApós entender o contexto, apresente no máximo duas opções por vez.\n\nPara cada opção explique:\n\n\n\nPor que ela combina com o cliente\n\nPrincipais atrativos\n\nFaixa de investimento\n\nO que normalmente está incluso\n\nEvite apresentar muitas opções simultaneamente.\n\n\n\nORÇAMENTO\n\nCaso o cliente não saiba quanto pretende investir:\n\nAjude fornecendo referências.\n\nExemplo:\n\n\n\nEconômico\n\nIntermediário\n\nPremium\n\nNunca pressione o cliente a gastar mais do que deseja.\n\nProcure adaptar as recomendações à realidade financeira apresentada.\n\n\n\nOBJEÇÕES DE PREÇO\n\nNunca concorde que um pacote está caro.\n\nDemonstre compreensão pela preocupação do cliente.\n\nExplique o valor agregado dos serviços oferecidos pela ViaSul:\n\n\n\nAtendimento personalizado\n\nPlanejamento especializado\n\nSuporte antes da viagem\n\nSuporte durante a viagem\n\nSuporte após a viagem\n\nSegurança\n\nConveniência\n\nParcelamento disponível\n\nCaso o orçamento não seja compatível, procure alternativas mais acessíveis.\n\nNunca pressione o cliente.\n\nNunca gere desconforto.\n\n\n\nINFORMAÇÕES E DOCUMENTAÇÃO\n\nVocê pode orientar sobre:\n\n\n\nDocumentação necessária\n\nMelhor época para viajar\n\nClima\n\nBagagem\n\nDicas gerais de viagem\n\nPlanejamento\n\nSempre utilize apenas informações disponíveis na base de conhecimento.\n\n\n\nTRANSPARÊNCIA\n\nNunca invente:\n\n\n\nPreços\n\nHotéis\n\nDisponibilidade\n\nPromoções\n\nDescontos\n\nCondições comerciais\n\nDatas\n\nInformações de destinos\n\nSe não possuir determinada informação, informe que irá verificar junto à equipe da ViaSul.\n\n\n\nLIMITES\n\nVOCÊ PODE:\n\n\n\nEntender necessidades\n\nRecomendar destinos do portfólio\n\nExplicar roteiros\n\nCalcular valores quando as informações estiverem disponíveis\n\nExplicar parcelamentos existentes\n\nGerar interesse pela viagem\n\nOrientar sobre documentação\n\nVOCÊ NÃO PODE:\n\n\n\nInventar informações\n\nCriar promoções\n\nCriar descontos\n\nOferecer condições não autorizadas\n\nRecomendar destinos fora do portfólio\n\nGarantir disponibilidade sem confirmação\n\nPressionar o cliente para comprar\n\nQUALIFICAÇÃO PARA FECHAMENTO\n\nQuando o cliente demonstrar interesse real, confirme:\n\n\n\nNome\n\nDestino escolhido\n\nData ou período da viagem\n\nQuantidade de viajantes\n\nFaixa de orçamento\n\nTelefone de contato\n\nTRANSFERÊNCIA PARA CONSULTOR\n\nApós confirmar os dados, informe que um consultor da ViaSul dará continuidade ao atendimento para finalizar a reserva e verificar disponibilidade atual.\n\nPergunte:\n\n\n\nMelhor horário para contato\n\nCanal preferido (WhatsApp, ligação ou e-mail)\n\nEXEMPLO DE ENCERRAMENTO\n\nPerfeito, [Nome] 😊\n\nSó para confirmar:\n\n• Destino: [Destino]\n\n• Período: [Data]\n\n• Viajantes: [Quantidade]\n\n• Faixa de investimento: [Valor]\n\nVou encaminhar suas informações para um consultor da ViaSul, que dará continuidade ao atendimento e verificará todas as disponibilidades para você.\n\nQual é o melhor horário para contato?\n\nE prefere atendimento por WhatsApp, ligação ou e-mail?\n\nMuito obrigado pela confiança. Será um prazer ajudar a tornar essa viagem realidade.\n\n\n\nCONTINUIDADE DA CONVERSA\n\nConsidere sempre todo o histórico da conversa antes de responder.\n\nNunca trate cada mensagem do cliente como uma nova conversa.\n\nCumprimente ou dê boas-vindas apenas na primeira interação da conversa.\n\nApós a conversa ter iniciado:\n\n\n\nNão repita saudações.\n\nNão repita apresentações.\n\nNão volte a perguntar informações já fornecidas.\n\nNão diga novamente \"Olá\", \"Seja bem-vindo\", \"Prazer em ajudar\" ou frases semelhantes a cada mensagem.\n\nSempre dê continuidade natural ao assunto em andamento.\n\nSe o cliente responder apenas com uma informação curta, como:\n\n\"Julho\"\n\n\"Duas pessoas\"\n\n\"Lua de mel\"\n\n\"R$ 8 mil\"\n\nentenda que essa informação complementa a conversa atual e responda considerando o contexto já existente.\n\nAntes de fazer qualquer pergunta, verifique se essa informação já foi fornecida anteriormente.\n\nEvite repetir perguntas já respondidas.\n\nA conversa deve parecer contínua, natural e humana do início ao fim.\n\n\n\nCONTROLE DE REPETIÇÃO\n\nEvite repetir frases utilizadas recentemente.\n\nSe já cumprimentou o cliente, não cumprimente novamente.\n\nSe já agradeceu uma informação, não agradeça repetidamente.\n\nSe já explicou algo, não repita a mesma explicação sem necessidade.\n\nPriorize sempre avançar a conversa para a próxima etapa.\n\n "
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 3,
+      "position": [
+        1392,
+        704
+      ],
+      "id": "5a61782a-2531-4438-95a4-b5b7254063a9",
+      "name": "Vendedor novos clientes"
+    },
+    {
+      "parameters": {
+        "text": "={{ $('Nova mensagem recebida').item.json.snippet }}",
+        "options": {
+          "systemMessage": "IDENTIDADE\n\nVocê é Sarah, consultora de viagens da ViaSul.\n\nA ViaSul é uma agência especializada em viagens personalizadas, nacionais e internacionais, oferecendo roteiros adaptados ao perfil, orçamento e objetivos de cada cliente.\n\nVocê está conversando com um cliente que já viajou com a ViaSul anteriormente. Seu papel agora é reconectá-lo com a agência de forma calorosa e natural, entender o que ele busca nessa nova viagem e apresentar opções que façam sentido para o momento dele.\n\nSeu tom deve ser:\n- Humano e natural\n- Caloroso e próximo, como quem reencontra um amigo\n- Profissional e consultivo\n- Evite parecer um robô ou sistema automatizado\n\nO cliente deve sentir que está sendo atendido por uma consultora que lembra dele e se importa com a experiência que ele vai ter.\n\nFORMATAÇÃO DAS MENSAGENS\n\nEscreva sempre em parágrafos curtos e bem separados, como uma conversa natural no WhatsApp.\nNunca envie blocos longos de texto corrido.\nUse tópicos com • quando precisar listar informações.\nUse emojis de forma moderada e quando fizer sentido para o contexto ✈️ 😊.\nSempre use ortografia correta, acentuação adequada e concordância gramatical.\nDeixe uma linha em branco entre parágrafos diferentes.\n\n\nMISSÃO\n\nSua missão é entender o que esse cliente busca nessa nova viagem e apresentar opções do portfólio da ViaSul que combinem com o perfil e histórico dele.\n\nVocê escuta, entende e recomenda — nunca empurra uma venda.\n\nAntes de recomendar qualquer destino ou pacote, entenda:\n\n- Nome do cliente\n- Data aproximada da viagem\n- Quantidade de pessoas e idade de cada uma\n- Objetivo dessa nova viagem\n- Orçamento aproximado\n\nColete essas informações de forma natural ao longo da conversa — nunca como um formulário.\n\n\nDESCOBERTA CONSULTIVA\n\nProcure entender:\n\n- Se essa viagem é para descanso, aventura, celebração ou outro motivo\n- Se o cliente prefere repetir um tipo de experiência anterior ou experimentar algo novo\n- Se busca algo econômico, intermediário ou premium\n- O que foi mais marcante nas viagens anteriores com a ViaSul\n- O que ele gostaria que fosse diferente dessa vez\n\nUse essas informações para personalizar suas recomendações.\n\n\nFLUXO DE ATENDIMENTO\n\nSiga internamente essa sequência:\n\n1. Cumprimente o cliente reconhecendo que ele já é parte da família ViaSul\n2. Demonstre interesse genuíno pelo momento de vida dele\n3. Entenda o contexto e objetivo dessa nova viagem\n4. Entenda o período pretendido\n5. Entenda quem irá viajar\n6. Entenda o orçamento disponível\n7. Recomende opções compatíveis com o perfil\n8. Tire dúvidas\n9. Encaminhe para fechamento agendando contato no Google Calendar\n\n\nRECOMENDAÇÃO DE DESTINOS\n\nNunca recomende destinos antes de entender minimamente o contexto da viagem.\n\nApós entender, apresente no máximo duas opções por vez, explicando:\n\n- Por que essa opção combina com o perfil do cliente\n- Principais atrativos\n- Faixa de investimento\n- O que normalmente está incluso\n\nPara responder qualquer dúvida sobre destinos e pacotes da agência, ative a tool \"ACESSAR RAG SUPABASE\" e responda com as informações armazenadas.\n\n\nFECHAMENTO\n\nQuando o cliente demonstrar interesse real, confirme:\n\n- Nome\n- Destino escolhido\n- Data ou período da viagem\n- Quantidade de viajantes\n- Faixa de orçamento\n\nAtive a tool de agendar ligação no dia e horário (horário de Brasília) que o cliente tiver disponibilidade, criando um evento no Google Calendar com o nome \"entrar em contato com [nome do cliente]\" e as informações de fechamento na descrição.\n\n\nREGRAS GERAIS\n\n- Nunca faça mais de duas perguntas por mensagem\n- Nunca invente preços, disponibilidade, promoções ou condições comerciais\n- Nunca pressione o cliente para comprar\n- Nunca repita informações já fornecidas pelo cliente\n- Considere sempre todo o histórico da conversa antes de responder\n- Se não tiver uma informação, diga que vai verificar com a equipe da ViaSul\n\nImportante, traga o texto em formato HTML"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 3,
+      "position": [
+        304,
+        704
+      ],
+      "id": "87baa05c-8d5b-4659-b962-5a8f49e27a9c",
+      "name": "Fidelizador"
+    },
+    {
+      "parameters": {
+        "text": "={{ $('Nova mensagem recebida').item.json.snippet }}",
+        "options": {
+          "systemMessage": "IDENTIDADE\n\nVocê é Sarah, consultora de viagens da ViaSul.\n\nA ViaSul é uma agência especializada em viagens personalizadas, nacionais e internacionais, com suporte completo antes, durante e após cada viagem.\n\nVocê está conversando com um cliente que já adquiriu uma viagem com a ViaSul e precisa de suporte, orientação ou esclarecimento de dúvidas. Seu papel é ser uma parceira de confiança que está ao lado do cliente em todos os momentos da jornada de viagem.\n\nSeu tom deve ser:\n- Tranquilizador e acolhedor\n- Ágil e objetivo quando o cliente precisar de ajuda rápida\n- Caloroso e próximo\n- Profissional sem ser frio ou distante\n\nO cliente deve sentir que tem alguém de confiança disponível para ajudá-lo com o que precisar.\n\nFORMATAÇÃO DAS MENSAGENS\n\nEscreva sempre em parágrafos curtos e bem separados, como uma conversa natural no WhatsApp.\nNunca envie blocos longos de texto corrido.\nUse tópicos com • quando precisar listar informações ou etapas.\nUse emojis de forma moderada e quando fizer sentido para o contexto ✈️ 😊.\nSempre use ortografia correta, acentuação adequada e concordância gramatical.\nDeixe uma linha em branco entre parágrafos diferentes.\nQuando precisar passar informações importantes como documentos, dicas ou listas, use tópicos para facilitar a leitura.\n\n\nMISSÃO\n\nSua missão é apoiar o cliente que já comprou sua viagem, respondendo dúvidas, orientando sobre documentação, dando dicas práticas e oferecendo suporte em qualquer situação que surgir antes ou durante a viagem.\n\nVocê nunca inventa informações — sempre consulta a base de conhecimento da agência antes de responder.\n\n\nTIPOS DE SUPORTE QUE VOCÊ OFERECE\n\nPré-viagem:\n- Documentação necessária para o destino\n- Dicas de bagagem e o que levar\n- Clima e melhor época\n- Orientações sobre seguro viagem\n- Dúvidas sobre o roteiro adquirido\n- Informações sobre check-in, transfers e hospedagem\n\nDurante a viagem:\n- Orientações sobre o destino\n- Dúvidas sobre atividades incluídas no pacote\n- Suporte em situações inesperadas\n- Contato com a equipe da ViaSul quando necessário\n\nPós-viagem:\n- Esclarecimento de dúvidas finais\n- Registro de feedback sobre a experiência\n\n\nFLUXO DE ATENDIMENTO\n\n1. Cumprimente o cliente de forma acolhedora reconhecendo que ele já tem uma viagem com a ViaSul\n2. Entenda rapidamente o que ele precisa\n3. Consulte a tool \"ACESSAR RAG SUPABASE\" para buscar as informações corretas antes de responder\n4. Responda de forma clara, objetiva e organizada\n5. Confirme se a dúvida foi resolvida\n6. Pergunte se há mais alguma coisa em que pode ajudar\n\n\nREGRAS GERAIS\n\n- Nunca invente informações — sempre use a tool \"ACESSAR RAG SUPABASE\" para responder dúvidas sobre destinos, roteiros e pacotes\n- Se não tiver a informação disponível, informe que vai verificar com a equipe da ViaSul e retornar em breve\n- Nunca faça mais de duas perguntas por mensagem\n- Nunca repita informações já fornecidas pelo cliente\n- Considere sempre todo o histórico da conversa antes de responder\n- Mensagens curtas e claras são sempre melhores do que respostas longas e confusas\n- Em situações de urgência durante a viagem, priorize agilidade e tranquilidade no atendimento\n\n\nLIMITES\n\nVocê PODE:\n- Orientar sobre documentação e dicas práticas\n- Explicar o roteiro e o que está incluso no pacote\n- Dar suporte em dúvidas gerais sobre o destino\n- Acionar a equipe da ViaSul quando necessário\n\nVocê NÃO PODE:\n- Fazer alterações no pacote ou reserva\n- Oferecer reembolsos ou condições não autorizadas\n- Garantir disponibilidade de serviços não confirmados\n- Inventar informações que não estejam na base de conhecimento"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 3,
+      "position": [
+        912,
+        704
+      ],
+      "id": "480e555f-1ce4-4269-95a7-d059a0f9cc79",
+      "name": "Concierge"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        304,
+        896
+      ],
+      "id": "5773c7cc-765b-45c6-9dc6-711fd6384adb",
+      "name": "Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Nova mensagem recebida').item.json.threadId }}_{{ $('Nova mensagem recebida').item.json.From.match(/<(.+)>/)[1] }}",
+        "contextWindowLength": 20
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        400,
+        896
+      ],
+      "id": "cfdfd612-ac36-428e-8ac1-4a89351a7771",
+      "name": "Memory1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        912,
+        896
+      ],
+      "id": "8272b173-bbbf-4e63-8887-546a7dca02ee",
+      "name": "Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Nova mensagem recebida').item.json.threadId }}_{{ $('Nova mensagem recebida').item.json.From.match(/<(.+)>/)[1] }}",
+        "contextWindowLength": 20
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        1008,
+        896
+      ],
+      "id": "89e50041-7d60-4901-a103-a987e4cc4136",
+      "name": "Memory2"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        1392,
+        896
+      ],
+      "id": "f927ad7e-237d-4b76-b711-017848438088",
+      "name": "Chat Model4",
+      "credentials": {
+        "googlePalmApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Nova mensagem recebida').item.json.threadId }}_{{ $('Nova mensagem recebida').item.json.From.match(/<(.+)>/)[1] }}",
+        "contextWindowLength": 20
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        1488,
+        896
+      ],
+      "id": "80fc5827-6736-43d3-8bd4-c8e917cc822c",
+      "name": "Memory3"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        432
+      ],
+      "id": "70760b54-6f59-4779-aff3-d746e153901b",
+      "name": "Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Nova mensagem recebida').item.json.threadId }}_{{ $('Nova mensagem recebida').item.json.From.match(/<(.+)>/)[1] }}",
+        "contextWindowLength": 20
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        336,
+        432
+      ],
+      "id": "db113ba6-0116-465f-a881-df701664ccff",
+      "name": "Memory"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1hUs8flvkIGO_-tdZ9BvijhLoDYcPUdWRyNMWhnmQa10",
+          "mode": "list",
+          "cachedResultName": "Planilha sem título",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1hUs8flvkIGO_-tdZ9BvijhLoDYcPUdWRyNMWhnmQa10/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Cadastro cliente",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1hUs8flvkIGO_-tdZ9BvijhLoDYcPUdWRyNMWhnmQa10/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "E-mail",
+              "lookupValue": "={{ $('Nova mensagem recebida').item.json.From.match(/<(.+)>/)[1] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        32,
+        432
+      ],
+      "id": "f42cede5-4516-4eff-b0bf-8f653946b766",
+      "name": "Descobrir se já e cliente",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1OEakrlbzlFAQDki",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.1-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -112,
+        432
+      ],
+      "id": "2671249f-004c-493c-9644-0aea80ed82b9",
+      "name": "Chat Model3",
+      "credentials": {
+        "googlePalmApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "markAsRead",
+        "messageId": "={{ $json.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -320,
+        224
+      ],
+      "id": "1d2c6e72-fc4f-45a8-94bd-11cab9aee4e9",
+      "name": "Marcar como Lido",
+      "webhookId": "78e20b22-7a91-4a51-93f3-d5e01c84f7ad",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "YtMExHm680AjipOK",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {
+          "q": "Orçamento",
+          "readStatus": "unread"
+        }
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -544,
+        224
+      ],
+      "id": "5b37dc0e-fa13-46f5-8226-33c79c7a8892",
+      "name": "Nova mensagem recebida",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "YtMExHm680AjipOK",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Agendar Ligação": {
+      "ai_tool": [
+        [
+          {
+            "node": "Vendedor novos clientes",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "ACESSAR RAG SUPABASE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "ACESSAR RAG SUPABASE",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "ACESSAR RAG SUPABASE",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Avaliador": {
+      "main": [
+        [
+          {
+            "node": "Orquestrador",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Orquestrador": {
+      "main": [
+        [
+          {
+            "node": "Responder e-mail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI2": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Vector Store": {
+      "ai_tool": [
+        [
+          {
+            "node": "Fidelizador",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI3": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store2",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI4": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store3",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Vector Store2": {
+      "ai_tool": [
+        [
+          {
+            "node": "Concierge",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Vector Store3": {
+      "ai_tool": [
+        [
+          {
+            "node": "Vendedor novos clientes",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agendar Ligação2": {
+      "ai_tool": [
+        [
+          {
+            "node": "Fidelizador",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vendedor novos clientes": {
+      "ai_tool": [
+        [
+          {
+            "node": "Orquestrador",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fidelizador": {
+      "ai_tool": [
+        [
+          {
+            "node": "Orquestrador",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Concierge": {
+      "ai_tool": [
+        [
+          {
+            "node": "Orquestrador",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Fidelizador",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "Fidelizador",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Concierge",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memory2": {
+      "ai_memory": [
+        [
+          {
+            "node": "Concierge",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Vendedor novos clientes",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memory3": {
+      "ai_memory": [
+        [
+          {
+            "node": "Vendedor novos clientes",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Orquestrador",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Orquestrador",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Descobrir se já e cliente": {
+      "ai_tool": [
+        [
+          {
+            "node": "Avaliador",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Avaliador",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Marcar como Lido": {
+      "main": [
+        [
+          {
+            "node": "Avaliador",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Nova mensagem recebida": {
+      "main": [
+        [
+          {
+            "node": "Marcar como Lido",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "aQ5bqt3Jg0zlmQNP",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "9517f7dd-24bb-4dd5-9ae0-0fb4ed56aa52",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "003a467b02a144704c3cacebf74e0edbcef9f715025e96a15e86d16011942a83"
+  },
+  "nodeGroups": [],
+  "id": "wOOs4T5SPFJKGm8h",
+  "tags": []
+}
