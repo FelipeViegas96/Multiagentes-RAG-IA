@@ -56,3 +56,12 @@ inteligente, RAG e memória de sessão.
 
 Os system prompts completos de cada agente estão disponíveis 
 na pasta `/prompts`.
+
+## ▶️ Como importar o fluxo
+
+1. Instale o n8n localmente (`npx n8n`) ou acesse sua instância
+2. Vá em **Workflows > Import from file**
+3. Selecione o arquivo `workflows/multiagentes_viasul.json`
+4. Configure suas credenciais: OpenAI, Gmail, Google Sheets, 
+   Google Calendar e Supabase
+5. Ative o fluxo e teste
